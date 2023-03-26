@@ -1,12 +1,31 @@
 const ViewController = (function () {
-  //TODO
+  const _gameScreen = document.querySelector("#game-screen");
+  const _gameOverScreen = document.querySelector("#game-over-screen");
+  const _winner = document.querySelector("#winner");
+  const _board = document.querySelector("#board");
+
+  const displayBoard = () => {
+    _board.textContent = "";
+    for (const symbol of Board.getBoard()) {
+      const cell = document.createElement("button");
+      cell.classList.add("board-cell");
+      cell.textContent = symbol;
+      _board.appendChild(cell);
+    }
+  };
+
+  const displayResults = (winner) => {
+    _winner.textContent = `${winner} is the winner`;
+    //TODO CHANGE SCREEN VISIBILITY
+  };
+
+  return { displayBoard, displayResults };
 })();
 
 const gameController = (function () {
   let _turnPlayer;
   let _player1;
   let _player2;
-  let _winner = "";
 
   const _switchTurnPlayer = () => {
     if (_turnPlayer === _player1) {
@@ -31,15 +50,19 @@ const gameController = (function () {
     _turnPlayer = _player1;
     Board.emptyBoard();
     //TODO CALL GAME SCREEN DISPLAY METHODS
+    ViewController.displayBoard();
   };
 
   const playTurn = (index) => {
     Board.placeSymbol(_turnPlayer.getSymbol(), index);
-    //TODO CALL DISPLAY THE BOARD
+    ViewController.displayBoard();
     const winner = Board.checkWinner();
     if (winner) {
-      //TODO CALL DISPLAY GAME OVER SCREEN
-      console.log(`The winner is: ${winner}`);
+      ViewController.displayResults(
+        _player1.getSymbol() === winner
+          ? _player1.getName()
+          : _player2.getName()
+      );
       return;
     }
     _switchTurnPlayer();
@@ -154,11 +177,9 @@ function CreatePlayer(name, symbol) {
   return { getName, getSymbol };
 }
 
-gameController.startGame("p1", "x", "p2", "o");
+gameController.startGame("player 1", "x", "player 2", "o");
 gameController.playTurn(0);
 gameController.playTurn(1);
 gameController.playTurn(4);
 gameController.playTurn(2);
 gameController.playTurn(8);
-
-console.table(Board.getBoard());

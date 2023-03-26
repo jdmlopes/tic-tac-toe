@@ -3,7 +3,17 @@
   padding: 0;
 }
 
-#game-screen,
+/* #game-screen,
 #game-over-screen {
   display: none;
+} */
+
+#board {
+  display: grid;
+  grid-template-columns: 50px 50px 50px;
+  grid-template-rows: 50px 50px 50px;
+}
+
+.board-cell {
+  border: 1px solid black;
 }
