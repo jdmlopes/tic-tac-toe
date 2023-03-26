@@ -16,17 +16,36 @@ const gameController = (function () {
     }
   };
 
+  const getTurnPlayer = () => {
+    return _turnPlayer;
+  };
+
+  const startGame = (
+    namePlayer1,
+    symbolPlayer1,
+    namePlayer2,
+    symbolPlayer2
+  ) => {
+    _player1 = CreatePlayer(namePlayer1, symbolPlayer1);
+    _player2 = CreatePlayer(namePlayer2, symbolPlayer2);
+    _turnPlayer = _player1;
+    Board.emptyBoard();
+    //TODO CALL GAME SCREEN DISPLAY METHODS
+  };
+
   const playTurn = (index) => {
     Board.placeSymbol(_turnPlayer.getSymbol(), index);
-    _winner = Board.checkWinner();
-    if (_winner) {
+    //TODO CALL DISPLAY THE BOARD
+    const winner = Board.checkWinner();
+    if (winner) {
       //TODO CALL DISPLAY GAME OVER SCREEN
+      console.log(`The winner is: ${winner}`);
       return;
     }
     _switchTurnPlayer();
   };
 
-  return { playTurn };
+  return { playTurn, startGame, getTurnPlayer };
 })();
 
 const Board = (function () {
@@ -115,7 +134,7 @@ const Board = (function () {
       return _board[2];
     }
 
-    return "segue o baile";
+    return "";
   };
 
   return { getBoard, emptyBoard, placeSymbol, checkWinner };
@@ -135,7 +154,11 @@ function CreatePlayer(name, symbol) {
   return { getName, getSymbol };
 }
 
-Board.emptyBoard();
+gameController.startGame("p1", "x", "p2", "o");
+gameController.playTurn(0);
+gameController.playTurn(1);
+gameController.playTurn(4);
+gameController.playTurn(2);
+gameController.playTurn(8);
 
 console.table(Board.getBoard());
-console.log(Board.checkWinner());
