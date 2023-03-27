@@ -13,10 +13,16 @@ const ViewController = (function () {
 
   const displayBoard = () => {
     _board.textContent = "";
-    for (const symbol of Board.getBoard()) {
+    for (const [index, symbol] of Board.getBoard().entries()) {
       const cell = document.createElement("button");
       cell.classList.add("board-cell");
       cell.textContent = symbol;
+      if (symbol === "") {
+        cell.addEventListener(
+          "click",
+          gameController.playTurn.bind(null, index)
+        );
+      }
       _board.appendChild(cell);
     }
   };
