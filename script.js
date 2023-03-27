@@ -1,8 +1,15 @@
 const ViewController = (function () {
+  const _startScreen = document.querySelector("#start-screen");
   const _gameScreen = document.querySelector("#game-screen");
   const _gameOverScreen = document.querySelector("#game-over-screen");
   const _winner = document.querySelector("#winner");
   const _board = document.querySelector("#board");
+  const _turn = document.querySelector("#turn");
+
+  const showGameScreen = () => {
+    _startScreen.style.display = "none";
+    _gameScreen.style.display = "block";
+  };
 
   const displayBoard = () => {
     _board.textContent = "";
@@ -14,12 +21,48 @@ const ViewController = (function () {
     }
   };
 
-  const displayResults = (winner) => {
-    _winner.textContent = `${winner} is the winner`;
-    //TODO CHANGE SCREEN VISIBILITY
+  const displayTurnPlayer = (turnPlayer) => {
+    _turn.textContent = `Playing: ${turnPlayer.getName()}`;
   };
 
-  return { displayBoard, displayResults };
+  const showGameOverScreen = (winner) => {
+    if (winner === "tie") _winner.textContent = `Tie Game`;
+    else _winner.textContent = `${winner} is the winner`;
+    _gameScreen.style.display = "none";
+    _gameOverScreen.style.display = "block";
+  };
+
+  const showStartScreen = () => {
+    _gameOverScreen.style.display = "none";
+    _startScreen.style.display = "block";
+  };
+
+  //Event listeners
+
+  document.querySelector("#players-data").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const p1Name = !e.target[0].value ? "Player 1" : e.target[0].value;
+    const p2Name = !e.target[3].value ? "Player 2" : e.target[3].value;
+    const p1Symbol = e.target[1].checked
+      ? "x"
+      : e.target[2].checked
+      ? "o"
+      : "x";
+    const p2Symbol = p1Symbol === "x" ? "o" : "x";
+    gameController.startGame(p1Name, p1Symbol, p2Name, p2Symbol);
+  });
+
+  document
+    .querySelector("#play-again-btn")
+    .addEventListener("click", showStartScreen);
+
+  return {
+    showGameScreen,
+    displayBoard,
+    displayTurnPlayer,
+    showGameOverScreen,
+    showStartScreen,
+  };
 })();
 
 const gameController = (function () {
@@ -49,8 +92,9 @@ const gameController = (function () {
     _player2 = CreatePlayer(namePlayer2, symbolPlayer2);
     _turnPlayer = _player1;
     Board.emptyBoard();
-    //TODO CALL GAME SCREEN DISPLAY METHODS
+    ViewController.displayTurnPlayer(_turnPlayer);
     ViewController.displayBoard();
+    ViewController.showGameScreen();
   };
 
   const playTurn = (index) => {
@@ -58,7 +102,11 @@ const gameController = (function () {
     ViewController.displayBoard();
     const winner = Board.checkWinner();
     if (winner) {
-      ViewController.displayResults(
+      if (winner === "tie") {
+        ViewController.showGameOverScreen(winner);
+        return;
+      }
+      ViewController.showGameOverScreen(
         _player1.getSymbol() === winner
           ? _player1.getName()
           : _player2.getName()
@@ -66,6 +114,7 @@ const gameController = (function () {
       return;
     }
     _switchTurnPlayer();
+    ViewController.displayTurnPlayer(_turnPlayer);
   };
 
   return { playTurn, startGame, getTurnPlayer };
@@ -177,9 +226,16 @@ function CreatePlayer(name, symbol) {
   return { getName, getSymbol };
 }
 
-gameController.startGame("player 1", "x", "player 2", "o");
-gameController.playTurn(0);
+/* gameController.startGame("player 1", "x", "player 2", "o"); */
+/* gameController.playTurn(0);
 gameController.playTurn(1);
 gameController.playTurn(4);
 gameController.playTurn(2);
+gameController.playTurn(5);
+gameController.playTurn(3);
+gameController.playTurn(6);
 gameController.playTurn(8);
+gameController.playTurn(7);
+ */
+/* ViewController.showStartScreen();
+ */
