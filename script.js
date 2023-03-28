@@ -34,27 +34,34 @@ const ViewController = (function () {
   const showGameOverScreen = (winner) => {
     if (winner === "tie") _winner.textContent = `Tie Game`;
     else _winner.textContent = `${winner} is the winner`;
-    _gameScreen.style.display = "none";
     _gameOverScreen.style.display = "block";
   };
 
   const showStartScreen = () => {
     _gameOverScreen.style.display = "none";
+    _gameScreen.style.display = "none";
     _startScreen.style.display = "block";
   };
 
   //Event listeners
 
+  document.querySelectorAll("input[name=symbol]").forEach((i) => {
+    i.addEventListener("input", (e) => {
+      if (e.target.id === "symbol-p1") {
+        document.querySelector("#lbl-symbol-p1").textContent = "X";
+        document.querySelector("#lbl-symbol-p2").textContent = "O";
+      } else {
+        document.querySelector("#lbl-symbol-p1").textContent = "O";
+        document.querySelector("#lbl-symbol-p2").textContent = "X";
+      }
+    });
+  });
   document.querySelector("#players-data").addEventListener("submit", (e) => {
     e.preventDefault();
     const p1Name = !e.target[0].value ? "Player 1" : e.target[0].value;
     const p2Name = !e.target[3].value ? "Player 2" : e.target[3].value;
-    const p1Symbol = e.target[1].checked
-      ? "x"
-      : e.target[2].checked
-      ? "o"
-      : "x";
-    const p2Symbol = p1Symbol === "x" ? "o" : "x";
+    const p1Symbol = e.target[2].checked ? "X" : "O";
+    const p2Symbol = p1Symbol === "X" ? "O" : "X";
     gameController.startGame(p1Name, p1Symbol, p2Name, p2Symbol);
   });
 
